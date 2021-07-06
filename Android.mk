@@ -1,9 +1,20 @@
-ifeq (,$(wildcard hardware/amlogic/EncoderAPI))
-
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(PLATFORM_SDK_VERSION),28)
+build:=0
 
+ifeq ($(PLATFORM_SDK_VERSION),28)
+$(warning build for android p)
+build=1
+endif
+
+ifeq ($(PLATFORM_SDK_VERSION),30)
+
+$(warning build for android r)
+
+build=1
+endif
+
+ifeq ($(build), 1)
 ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
 OMX_PATH_32 := $(TARGET_OUT_VENDOR)/lib/
 OMX_PATH_64 := $(TARGET_OUT_VENDOR)/lib64/
@@ -23,6 +34,7 @@ LOCAL_MODULE_PATH_64 := $(OMX_PATH_64)
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES_arm := lib/$(LOCAL_MODULE)$(LOCAL_MODULE_SUFFIX)
 LOCAL_SRC_FILES_arm64 := lib64/$(LOCAL_MODULE)$(LOCAL_MODULE_SUFFIX)
+LOCAL_CHECK_ELF_FILES := false
 include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
@@ -36,6 +48,7 @@ LOCAL_MODULE_PATH_64 := $(OMX_PATH_64)
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES_arm := lib/$(LOCAL_MODULE)$(LOCAL_MODULE_SUFFIX)
 LOCAL_SRC_FILES_arm64 := lib64/$(LOCAL_MODULE)$(LOCAL_MODULE_SUFFIX)
+LOCAL_CHECK_ELF_FILES := false
 include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
@@ -49,9 +62,9 @@ LOCAL_MODULE_PATH_64 := $(OMX_PATH_64)
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES_arm := lib/$(LOCAL_MODULE)$(LOCAL_MODULE_SUFFIX)
 LOCAL_SRC_FILES_arm64 := lib64/$(LOCAL_MODULE)$(LOCAL_MODULE_SUFFIX)
+LOCAL_CHECK_ELF_FILES := false
 include $(BUILD_PREBUILT)
 
 endif
 
-endif
-
+include $(call all-makefiles-under,$(LOCAL_PATH))
